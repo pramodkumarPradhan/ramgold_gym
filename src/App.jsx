@@ -12,6 +12,8 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CheckoutModal from './components/CheckoutModal';
 import FullPage3DLine from './components/FullPage3DLine';
+import CinematicPreloader from './components/CinematicPreloader';
+import VirtualTourModal from './components/VirtualTourModal';
 import { MessageCircle } from 'lucide-react';
 import { GYM_CONFIG } from './config/gymConfig';
 
@@ -19,6 +21,8 @@ export default function App() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutPlan, setCheckoutPlan] = useState('Quarterly Membership');
+  const [isTourOpen, setIsTourOpen] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(true);
 
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
@@ -38,6 +42,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#041626] text-slate-100 flex flex-col font-inter selection:bg-[#25BDF2] selection:text-[#041626]">
+      {/* Cinematic 3D Arena Startup Preloader */}
+      {showPreloader && (
+        <CinematicPreloader onComplete={() => setShowPreloader(false)} />
+      )}
+
       {/* 1. Header Navigation with Online Join */}
       <Navbar 
         onSelectPlan={handlePlanSelect} 
@@ -48,23 +57,24 @@ export default function App() {
         {/* Full-Page Continuous 3D Kinetic Energy Line */}
         <FullPage3DLine />
 
-        {/* 2. Hero Section */}
+        {/* 2. Hero Section with Concept 3 3D Arena */}
         <Hero
           onStartJourney={() => handleOpenCheckout('Quarterly Membership')}
           onExploreClick={() => setSelectedPlan('Quarterly Membership')}
-          onDiscoverClick={() => {}}
+          onDiscoverClick={() => setIsTourOpen(true)}
+          onOpenTour={() => setIsTourOpen(true)}
         />
 
         {/* 3. About Section */}
         <About />
 
-        {/* 4. Facilities Bento Grid */}
-        <Facilities />
+        {/* 4. Facilities Bento Grid ("EXPERIENCE THE ARENA") */}
+        <Facilities onOpenTour={() => setIsTourOpen(true)} />
 
         {/* 5. Training Experience & Methodology */}
         <Methodology />
 
-        {/* 6. Membership Plans with Direct Online Payment Option */}
+        {/* 6. Membership Plans ("MEMBERSHIP TIERS") */}
         <Membership 
           onSelectPlan={handlePlanSelect} 
           onOpenCheckout={handleOpenCheckout}
@@ -93,6 +103,13 @@ export default function App() {
         isOpen={isCheckoutOpen}
         onClose={handleCloseCheckout}
         initialPlan={checkoutPlan}
+      />
+
+      {/* 3D Virtual Arena Tour Modal */}
+      <VirtualTourModal
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        onSelectPlan={handlePlanSelect}
       />
 
       {/* Floating WhatsApp Quick Action Button */}

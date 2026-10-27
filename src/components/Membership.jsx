@@ -24,13 +24,17 @@ export default function Membership({ onSelectPlan, onOpenCheckout }) {
   return (
     <section id="membership" className="py-20 md:py-28 bg-transparent relative z-10 text-white border-t border-[#081E30]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-        {/* Header */}
+        {/* Header matching Concept 3 */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs uppercase tracking-widest text-[#25BDF2] font-bold block mb-2">
-            INVEST IN YOURSELF
-          </span>
-          <h2 className="font-headline-lg text-4xl sm:text-5xl lg:text-6xl text-white uppercase">
-            CHOOSE YOUR COMMITMENT.
+          <div className="flex items-center justify-center space-x-2 mb-2">
+            <span className="w-5 h-[2px] bg-[#25BDF2]" />
+            <span className="text-xs uppercase tracking-widest text-[#25BDF2] font-black block font-mono">
+              INVEST IN YOUR PERFORMANCE
+            </span>
+            <span className="w-5 h-[2px] bg-[#25BDF2]" />
+          </div>
+          <h2 className="font-headline-lg text-4xl sm:text-5xl lg:text-6xl text-white uppercase tracking-tight">
+            MEMBERSHIP TIERS.
           </h2>
           <p className="text-slate-300 mt-4 text-base sm:text-lg font-medium">
             Transparent tier structures tailored for elite standards. No hidden sign-up fees.
