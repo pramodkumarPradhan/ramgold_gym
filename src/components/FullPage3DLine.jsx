@@ -131,16 +131,12 @@ export default function FullPage3DLine() {
     const offset = Math.round(Math.max(12, Math.min(18, W * 0.009)));
 
     // Waypoints aligned with page sections:
-    // P0: Top of Hero (matches polygon 16% of w-[56%] -> 44% + 8.96% = 52.96vw)
-    const p0 = { x: W * 0.5296, y: 0 };
-    
-    // P1: Exact Bottom of Hero (matches polygon 1% of w-[56%] -> 44% + 0.56% = 44.56vw)
+    // P1: Exact Bottom of Hero / Top of About (line starts here, omitting Hero section completely)
     const p1 = { x: W * 0.4456, y: dimensions.heroBottom };
 
-    // In Hero, the gym photo cut is a straight line, so P0 -> P1 is a straight line.
-    // To ensure C1 continuous smoothness entering About, calculate the exit tangent:
+    // To ensure C1 continuous smoothness entering About, calculate the entrance tangent:
     const heroH = dimensions.heroBottom > 0 ? dimensions.heroBottom : 900;
-    const tangentX = (p1.x - p0.x) / heroH;
+    const tangentX = -W * 0.084 / heroH;
 
     // P2: Middle of About (flows through center negative space between athlete photo & copy)
     const aboutH = dimensions.aboutBottom - dimensions.heroBottom;
@@ -186,10 +182,9 @@ export default function FullPage3DLine() {
     // P12: Contact Bottom / Page End
     const p12 = { x: W * 0.490, y: dimensions.totalHeight };
 
-    // Build smooth primary path
+    // Build smooth primary path starting cleanly below Hero (at top of About)
     const path = `
-      M ${p0.x.toFixed(1)} ${p0.y.toFixed(1)}
-      L ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}
+      M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}
       C ${cp1_about.x.toFixed(1)} ${cp1_about.y.toFixed(1)}, ${cp2_about.x.toFixed(1)} ${cp2_about.y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}
       C ${cp3_about.x.toFixed(1)} ${cp3_about.y.toFixed(1)}, ${cp4_about.x.toFixed(1)} ${cp4_about.y.toFixed(1)}, ${p3.x.toFixed(1)} ${p3.y.toFixed(1)}
       S ${W * 0.45} ${dimensions.aboutBottom + facH * 0.25}, ${p4.x.toFixed(1)} ${p4.y.toFixed(1)}
@@ -205,8 +200,7 @@ export default function FullPage3DLine() {
 
     // Secondary parallel path offset by fixed horizontal delta (SOLID, NOT DOTTED)
     const secPath = `
-      M ${(p0.x + offset).toFixed(1)} ${p0.y.toFixed(1)}
-      L ${(p1.x + offset).toFixed(1)} ${p1.y.toFixed(1)}
+      M ${(p1.x + offset).toFixed(1)} ${p1.y.toFixed(1)}
       C ${(cp1_about.x + offset).toFixed(1)} ${cp1_about.y.toFixed(1)}, ${(cp2_about.x + offset).toFixed(1)} ${cp2_about.y.toFixed(1)}, ${(p2.x + offset).toFixed(1)} ${p2.y.toFixed(1)}
       C ${(cp3_about.x + offset).toFixed(1)} ${cp3_about.y.toFixed(1)}, ${(cp4_about.x + offset).toFixed(1)} ${cp4_about.y.toFixed(1)}, ${(p3.x + offset).toFixed(1)} ${p3.y.toFixed(1)}
       S ${(W * 0.45 + offset).toFixed(1)} ${dimensions.aboutBottom + facH * 0.25}, ${(p4.x + offset).toFixed(1)} ${p4.y.toFixed(1)}
@@ -239,6 +233,16 @@ export default function FullPage3DLine() {
         preserveAspectRatio="none"
       >
         <defs>
+          {/* Strict clip boundary ensuring zero line rendering inside Hero */}
+          <clipPath id="belowHeroClip">
+            <rect
+              x="0"
+              y={dimensions.heroBottom - 2}
+              width={dimensions.width}
+              height={Math.max(0, dimensions.totalHeight - dimensions.heroBottom + 10)}
+            />
+          </clipPath>
+
           {/* Subtle Kinetic Traveling Gradient along path */}
           <linearGradient id="travelingBeam" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#25BDF2" stopOpacity="0.35" />
@@ -258,39 +262,41 @@ export default function FullPage3DLine() {
           </linearGradient>
         </defs>
 
-        {/* 1. Subtle Ambient Soft Glow Layer (Tight, non-glaring depth) */}
-        <path
-          d={primaryPath}
-          fill="none"
-          stroke="#25BDF2"
-          strokeWidth="10"
-          strokeOpacity="0.08"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <g clipPath="url(#belowHeroClip)">
+          {/* 1. Subtle Ambient Soft Glow Layer (Tight, non-glaring depth) */}
+          <path
+            d={primaryPath}
+            fill="none"
+            stroke="#25BDF2"
+            strokeWidth="10"
+            strokeOpacity="0.08"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
 
-        {/* 2. Secondary Parallel Solid Accent Line (Substantial athletic guide) */}
-        <path
-          d={secondaryPath}
-          fill="none"
-          stroke="url(#secondaryBeam)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+          {/* 2. Secondary Parallel Solid Accent Line (Substantial athletic guide) */}
+          <path
+            d={secondaryPath}
+            fill="none"
+            stroke="url(#secondaryBeam)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
 
-        {/* 3. Primary Precision Cyan Beam (Bold, heavy weight with subtle tight glow) */}
-        <path
-          d={primaryPath}
-          fill="none"
-          stroke="url(#travelingBeam)"
-          strokeWidth="5.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{
-            filter: 'drop-shadow(0 0 6px rgba(37, 189, 242, 0.45))'
-          }}
-        />
+          {/* 3. Primary Precision Cyan Beam (Bold, heavy weight with subtle tight glow) */}
+          <path
+            d={primaryPath}
+            fill="none"
+            stroke="url(#travelingBeam)"
+            strokeWidth="5.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              filter: 'drop-shadow(0 0 6px rgba(37, 189, 242, 0.45))'
+            }}
+          />
+        </g>
       </svg>
     </div>
   );

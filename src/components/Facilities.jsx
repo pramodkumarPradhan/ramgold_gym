@@ -1,13 +1,18 @@
 import React from 'react';
 import { GYM_CONFIG } from '../config/gymConfig';
 import SafeImage from './SafeImage';
-import { ArrowRight, Compass, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
-export default function Facilities({ onOpenTour }) {
+export default function Facilities() {
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section id="facilities" className="py-20 md:py-28 bg-transparent relative z-10 text-white border-t border-[#081E30]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-        {/* Section Header matching Concept 3 */}
+        {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 md:mb-16">
           <div>
             <div className="flex items-center space-x-2 mb-2">
@@ -21,18 +26,9 @@ export default function Facilities({ onOpenTour }) {
             </h2>
           </div>
           <div className="mt-4 md:mt-0 max-w-md flex flex-col items-start md:items-end">
-            <p className="text-slate-300 text-sm sm:text-base font-normal leading-relaxed md:text-right mb-3">
+            <p className="text-slate-300 text-sm sm:text-base font-normal leading-relaxed md:text-right">
               Meticulously curated training zones engineered without compromise for pure athletic progression in Balasore.
             </p>
-            {onOpenTour && (
-              <button
-                onClick={onOpenTour}
-                className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-[#25BDF2] hover:text-white transition-colors"
-              >
-                <Compass className="w-4 h-4 animate-spin duration-[10000ms]" />
-                <span>LAUNCH 3D VIRTUAL TOUR</span>
-              </button>
-            )}
           </div>
         </div>
 
@@ -41,7 +37,7 @@ export default function Facilities({ onOpenTour }) {
           {GYM_CONFIG.facilities.map((facility) => (
             <div
               key={facility.id}
-              onClick={onOpenTour ? onOpenTour : undefined}
+              onClick={() => scrollTo('membership')}
               className={`${facility.colSpan} relative group overflow-hidden bg-[#081E30] h-[360px] sm:h-[400px] border border-[#102F4A] hover:border-[#25BDF2] shadow-xl hover:shadow-[0_20px_50px_rgba(37,189,242,0.2)] rounded-none transition-all duration-500 hover:-translate-y-1.5 cursor-pointer`}
             >
               {/* Top Cyan Accent Laser Line */}
@@ -64,7 +60,7 @@ export default function Facilities({ onOpenTour }) {
               {/* Top Right Zone Hotspot Indicator */}
               <div className="absolute top-5 right-5 z-20 opacity-75 group-hover:opacity-100 transition-opacity">
                 <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-[#25BDF2] bg-[#041626]/90 border border-[#25BDF2]/40 px-2.5 py-1">
-                  ARENA 3D
+                  RAMGOLD ARENA
                 </span>
               </div>
 
@@ -82,7 +78,7 @@ export default function Facilities({ onOpenTour }) {
 
                 {/* Hover Reveal Action */}
                 <div className="flex items-center space-x-2 text-xs font-bold text-white group-hover:text-[#25BDF2] transition-colors pt-1">
-                  <span>INSPECT ARENA SPECS</span>
+                  <span>VIEW MEMBERSHIP PLANS</span>
                   <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
                 </div>
               </div>
